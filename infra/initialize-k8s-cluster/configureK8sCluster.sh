@@ -1,3 +1,11 @@
+echo "Enter the Cluster name"
+read cluster_name
+
+echo "Enter AWS Region"
+read aws_regiom
+
+echo "Updating the Kubeconfig for EKS Cluster"
+aws eks update-kubeconfig --name $cluster_name --region $aws_regiom
 
 echo "Setting up the k8s Dashboard"
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
@@ -22,3 +30,4 @@ helm install ingress-nginx ingress-nginx/ingress-nginx
 
 LB_URL=`kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[*].hostname}'`
 echo "NGINX Load Balancer URL : $LB_URL"
+
