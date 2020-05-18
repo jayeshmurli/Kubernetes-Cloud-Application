@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: uiservice
+  namespace: ui
+spec:
+  selector:
+    app: kubernetes-node-server-replicaset-frontend
+  ports:
+    - port: 80
+      targetPort: 80

@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: kubernetes-node-server-replicaset-frontend
+  namespace: ui
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: kubernetes-node-server-replicaset-frontend
+      rbac: frontend-service-account
+  template:
+    metadata:
+      labels:
+        app: kubernetes-node-server-replicaset-frontend
+        rbac: frontend-service-account
+    spec:
+      serviceAccountName: frontend-service-account
+      initContainers:
+        - name : init-service
+          image: busybox:latest
+          command : ['sh','-c','until nslookup apiservice.api.svc.cluster.local;do echo waiting for api_service.backend;sleep 2;done;']
+      containers:
+        - name: kubernetes-node-server-replicaset-frontend
+          image: front_image_to_replace
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: API_URL
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 100
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 100
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+            requests:
+              memory: "256Mi"
+              cpu: "500m"

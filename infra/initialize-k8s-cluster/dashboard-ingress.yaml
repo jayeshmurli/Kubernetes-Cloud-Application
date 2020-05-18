@@ -1,0 +1,52 @@
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+namespace:
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      auth_request_set $token $upstream_http_authorization;
+      proxy_set_header Authorization $token;
+  name: external-auth-oauth2
+  namespace: kube-system
+spec:
+  rules:
+  - host: public.csye6225-spring2019-iyerj.me
+    http:
+      paths:
+      - backend:
+          serviceName: kubernetes-dashboard
+          servicePort: 443
+        path: /
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+  namespace: kube-system
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: 'true'
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+  - host: public.csye6225-spring2019-iyerj.me
+    http:
+      paths:
+      - backend:
+          serviceName: oauth2-proxy
+          servicePort: 4180
+        path: /oauth2
+  tls:
+  - hosts:
+    - public.csye6225-spring2019-iyerj.me
+    secretName: mytls
+
+---

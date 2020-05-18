@@ -1,0 +1,27 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: frontend-role
+  namespace: ui
+  labels:
+    app: frontend-rbac
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "update", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "watch", "list"]
+#  - apiGroups: [""]
+#    resources: ["nodes"]
+#    verbs: ["get", "watch", "list", "update", "delete", "create"]
+#  - apiGroups: [""]
+#    resources: ["pods"]
+#    verbs: ["get", "watch", "list", "update", "delete", "create"]
+#  - apiGroups: [""]
+#    resources: ["deployments"]
+#    verbs: ["get", "watch", "list", "update", "delete", "create"]
+

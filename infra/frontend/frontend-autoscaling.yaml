@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-autoscaler
+  namespace: ui
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: kubernetes-node-server-replicaset-frontend
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 5

@@ -1,0 +1,27 @@
+<div class="card mt-2">
+            <h5 class="card-header">{{data.title}}</h5>
+            <div class="card-body">
+                <h5 class="card-title">Author ID: {{data.author_id}}</h5>
+                <p class="card-text">Created On: {{data.created_ts}}</p>
+                <p class="card-text">Updated On: {{data.updated_ts}}</p>
+                <p class="card-text">Preparation Time: {{data.prep_time_in_min}} minutes</p>
+                <p class="card-text">Cooking Time: {{data.cook_time_in_min}} minutes</p>
+                <p class="card-text">Total TIme: {{data.total_time_in_min}} minutes</p>
+                <p class="card-text">Cuisine: {{data.cuisine}}</p>
+                <p class="card-text">Servings: {{data.servings}}</p>
+                <p class="card-text">Ingredients: </p>
+                {{#each data.ingredients}}
+                <p>{{this}}</p>
+                {{/each}}
+                <p class="card-text">Nutrional Information:</p>
+                <p class="card-text">Calories: {{data.nutrition_information.calories}}</p>
+                <p class="card-text">Cholestrol: {{data.nutrition_information.cholesterol_in_mg}}</p>
+                <p class="card-text">Sodium: {{data.nutrition_information.sodium_in_mg}}</p>
+                <p class="card-text">Carbohydrates: {{data.nutrition_information.carbohydrates_in_grams}}</p>
+                <p class="card-text">Protein: {{data.nutrition_information.protein_in_grams}}</p>
+                <p class="card-text">Steps:</p>
+                {{#each data.steps}}
+                <p class="card-text">{{this.position}}: {{items}}</p>
+                {{/each}}
+            </div>
+        </div>

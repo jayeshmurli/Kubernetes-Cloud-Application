@@ -1,0 +1,21 @@
+FROM adoptopenjdk/maven-openjdk11:latest AS builder
+
+COPY webapp-backend ./webapp-backend/
+
+RUN ls webapp-backend/
+
+WORKDIR webapp-backend
+
+RUN ls && mvn clean install
+
+FROM openjdk:latest
+
+COPY --from=builder webapp-backend/target/webapp-backend.jar .
+
+#COPY webapp-backend/target/webapp-backend.jar .
+
+RUN chmod +x webapp-backend.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","webapp-backend.jar"]

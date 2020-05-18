@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+# This role binding allows "service account" to read secrets, nodes, configmap in the "ui" namespace.
+kind: RoleBinding
+metadata:
+  name: frontend-rolebinding
+  namespace: ui # This only grants permissions within the "ui" namespace.
+subjects:
+- kind: Group
+  name: system:serviceaccounts:ui
+roleRef:
+  kind: Role
+  name: frontend-role
+  apiGroup: rbac.authorization.k8s.io

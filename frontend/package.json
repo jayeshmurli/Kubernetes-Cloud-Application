@@ -1,0 +1,20 @@
+{
+  "name": "f19-t1-webapp-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for CSYE7374 Recipe App",
+  "main": "index.js",
+  "scripts": {
+    "dev": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/ && node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rahul Zore",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "prom-client": "^11.5.3"
+  }
+}

@@ -1,0 +1,77 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: kubernetes-node-server-replicaset
+  namespace: api
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: kubernetes-node-server-replicaset-backend
+  template:
+    metadata:
+      labels:
+        app: kubernetes-node-server-replicaset-backend
+    spec:
+      serviceAccountName: backend-service-account
+      initContainers:
+        - name : init-service
+          image: busybox:latest
+          command : ['sh','-c','until nslookup elasticsearch.api.svc.cluster.local;do echo waiting for elasticsearch.api;sleep 2;done;']
+      containers:
+        - name: kubernetes-node-server-replicaset-backend
+          image: 298906029222.dkr.ecr.us-east-1.amazonaws.com/webapp-backend:6a3bd4
+          args: ["--spring.profiles.active=dev"]
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: DB_HOST
+            - name: ELASTICSEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: ELASTICSEARCH_HOST
+            - name: AWS_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: AWS_BUCKET_NAME
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 100
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 100
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "1000m"
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
